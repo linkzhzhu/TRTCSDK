@@ -8,6 +8,7 @@ Win32
 Win64
 *.ipch
 .history
+.idea
 
 # Xcode
 #
