@@ -7,7 +7,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -68,6 +70,9 @@ public class RTCActivity extends AppCompatActivity implements View.OnClickListen
     private String                          mRoomId;                    // 房间Id
     private String                          mUserId;                    // 用户Id
 
+    private ViewGroup                       mMainVideoViewContainer;
+    private SurfaceView                     mMainVideoSurface;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,18 +95,24 @@ public class RTCActivity extends AppCompatActivity implements View.OnClickListen
             if (intent.getStringExtra(Constant.ROOM_ID) != null) {
                 mRoomId = intent.getStringExtra(Constant.ROOM_ID);
             }
+            mUserId = "link_android_simple_demo_dep";
+            mRoomId = "111";
         }
     }
 
     private void initView() {
         mTitleText          = findViewById(R.id.trtc_tv_room_number);
         mBackButton         = findViewById(R.id.trtc_ic_back);
-        mLocalPreviewView   = findViewById(R.id.trtc_tc_cloud_view_main);
+//        mLocalPreviewView   = findViewById(R.id.trtc_tc_cloud_view_main);
         mMuteVideo          = findViewById(R.id.trtc_btn_mute_video);
         mMuteAudio          = findViewById(R.id.trtc_btn_mute_audio);
         mSwitchCamera       = findViewById(R.id.trtc_btn_switch_camera);
         mLogInfo            = findViewById(R.id.trtc_btn_log_info);
         mVideoMutedTipsView = findViewById(R.id.ll_trtc_mute_video_default);
+        mMainVideoViewContainer = findViewById(R.id.trtc_main_view_container);
+        mMainVideoSurface = findViewById(R.id.trtc_video_surface_view);
+
+        mLocalPreviewView = new TXCloudVideoView(mMainVideoSurface);
 
         if (!TextUtils.isEmpty(mRoomId)) {
             mTitleText.setText(mRoomId);
@@ -293,6 +304,7 @@ public class RTCActivity extends AppCompatActivity implements View.OnClickListen
             Log.d(TAG, "onUserVideoAvailable userId " + userId + ", mUserCount " + mUserCount + ",available " + available);
             int index = mRemoteUidList.indexOf(userId);
             if (available) {
+                mMainVideoViewContainer.removeAllViews();
                 if (index != -1) { //如果mRemoteUidList有，就不重复添加
                     return;
                 }

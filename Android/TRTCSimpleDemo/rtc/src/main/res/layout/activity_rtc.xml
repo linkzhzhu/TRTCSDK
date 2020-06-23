@@ -7,10 +7,19 @@
     android:background="@color/rtc_main_bg">
 
 
-    <com.tencent.rtmp.ui.TXCloudVideoView
-        android:id="@+id/trtc_tc_cloud_view_main"
+<!--    <com.tencent.rtmp.ui.TXCloudVideoView-->
+<!--        android:id="@+id/trtc_tc_cloud_view_main"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent" />-->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:id="@+id/trtc_main_view_container" >
+        <SurfaceView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/trtc_video_surface_view"/>
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/ll_trtc_mute_video_default"
