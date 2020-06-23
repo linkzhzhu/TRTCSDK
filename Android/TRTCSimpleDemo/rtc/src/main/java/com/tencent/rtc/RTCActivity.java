@@ -296,6 +296,30 @@ public class RTCActivity extends AppCompatActivity implements View.OnClickListen
         mTRTCCloud.showDebugView(mLogLevel);
     }
 
+    private int testNum = 0;
+    private void removeAddTest(){
+        mMainVideoViewContainer.removeAllViews();
+        mMainThreadHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mMainVideoSurface = new SurfaceView(getApplicationContext());
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+                mMainVideoViewContainer.addView(mMainVideoSurface, lp);
+                mLocalPreviewView = new TXCloudVideoView(mMainVideoSurface);
+                mTRTCCloud.startLocalPreview(mIsFrontCamera, mLocalPreviewView);
+
+//                if(testNum ++ < 1000){
+//                    mMainThreadHandler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            removeAddTest();
+//                        }
+//                    }, 1000);
+//                }
+            }
+        }, 1000);
+    }
+
     private class TRTCCloudImplListener extends TRTCCloudListener {
 
         private WeakReference<RTCActivity>      mContext;
@@ -310,17 +334,7 @@ public class RTCActivity extends AppCompatActivity implements View.OnClickListen
             Log.d(TAG, "onUserVideoAvailable userId " + userId + ", mUserCount " + mUserCount + ",available " + available);
             int index = mRemoteUidList.indexOf(userId);
             if (available) {
-                mMainVideoViewContainer.removeAllViews();
-                mMainThreadHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mMainVideoSurface = new SurfaceView(getApplicationContext());
-                        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-                        mMainVideoViewContainer.addView(mMainVideoSurface, lp);
-                        mLocalPreviewView = new TXCloudVideoView(mMainVideoSurface);
-                        mTRTCCloud.startLocalPreview(mIsFrontCamera, mLocalPreviewView);
-                    }
-                }, 2000);
+                removeAddTest();
                 if (index != -1) { //如果mRemoteUidList有，就不重复添加
                     return;
                 }
