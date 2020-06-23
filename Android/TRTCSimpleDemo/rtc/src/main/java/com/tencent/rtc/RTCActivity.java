@@ -5,12 +5,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -72,11 +74,13 @@ public class RTCActivity extends AppCompatActivity implements View.OnClickListen
 
     private ViewGroup                       mMainVideoViewContainer;
     private SurfaceView                     mMainVideoSurface;
+    private Handler                         mMainThreadHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rtc);
+        mMainThreadHandler = new Handler(getMainLooper());
         getSupportActionBar().hide();
         handleIntent();
         // 先检查权限再加入通话
@@ -110,8 +114,10 @@ public class RTCActivity extends AppCompatActivity implements View.OnClickListen
         mLogInfo            = findViewById(R.id.trtc_btn_log_info);
         mVideoMutedTipsView = findViewById(R.id.ll_trtc_mute_video_default);
         mMainVideoViewContainer = findViewById(R.id.trtc_main_view_container);
-        mMainVideoSurface = findViewById(R.id.trtc_video_surface_view);
-
+//        mMainVideoSurface = findViewById(R.id.trtc_video_surface_view);
+        mMainVideoSurface = new SurfaceView(getApplicationContext());
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+        mMainVideoViewContainer.addView(mMainVideoSurface, lp);
         mLocalPreviewView = new TXCloudVideoView(mMainVideoSurface);
 
         if (!TextUtils.isEmpty(mRoomId)) {
@@ -305,6 +311,16 @@ public class RTCActivity extends AppCompatActivity implements View.OnClickListen
             int index = mRemoteUidList.indexOf(userId);
             if (available) {
                 mMainVideoViewContainer.removeAllViews();
+                mMainThreadHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mMainVideoSurface = new SurfaceView(getApplicationContext());
+                        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+                        mMainVideoViewContainer.addView(mMainVideoSurface, lp);
+                        mLocalPreviewView = new TXCloudVideoView(mMainVideoSurface);
+                        mTRTCCloud.startLocalPreview(mIsFrontCamera, mLocalPreviewView);
+                    }
+                }, 2000);
                 if (index != -1) { //如果mRemoteUidList有，就不重复添加
                     return;
                 }

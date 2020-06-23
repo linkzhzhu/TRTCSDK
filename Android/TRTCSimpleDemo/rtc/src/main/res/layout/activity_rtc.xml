@@ -15,10 +15,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/trtc_main_view_container" >
-        <SurfaceView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/trtc_video_surface_view"/>
+<!--        <SurfaceView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:id="@+id/trtc_video_surface_view"/>-->
     </FrameLayout>
 
     <LinearLayout
