@@ -63,7 +63,11 @@ public class GenerateTestUserSig {
      * 注意：该方案仅适用于调试Demo，正式上线前请将 UserSig 计算代码和密钥迁移到您的后台服务器上，以避免加密密钥泄露导致的流量盗用。
      * 文档：https://cloud.tencent.com/document/product/269/32688#Server
      */
+<<<<<<< HEAD
     private static final String SECRETKEY = "58be2ce0f263fcdecc3bfa77f270e48f188360cf8255f6283de3a19a85a214f4";
+=======
+    private static final String SECRETKEY = "";
+>>>>>>> master
 
     /**
      * 计算 UserSig 签名
