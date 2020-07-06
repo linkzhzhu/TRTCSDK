@@ -15,6 +15,8 @@ import com.tencent.trtc.TRTCCloud;
 import com.tencent.trtc.TRTCCloudDef;
 import com.tencent.trtc.TRTCCloudListener;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -68,16 +70,16 @@ public class TXTRTCMeeting extends TRTCCloudListener {
     }
 
     public void enterRoom(int sdkAppId, String roomId, String userId, String userSign, TXCallback callback) {
-        if (sdkAppId == 0 || TextUtils.isEmpty(roomId) || TextUtils.isEmpty(userId) || TextUtils.isEmpty(userSign)) {
-            // 参数非法，可能执行了退房，或者登出
-            TRTCLogger.e(TAG, "enter trtc room fail. params invalid. room id:" + roomId +
-                    " user id:" + userId + " sign is empty:" + TextUtils.isEmpty(userSign));
-            if (callback != null) {
-                callback.onCallback(-1, "enter trtc room fail. params invalid. room id:" +
-                        roomId + " user id:" + userId + " sign is empty:" + TextUtils.isEmpty(userSign));
-            }
-            return;
-        }
+//        if (sdkAppId == 0 || TextUtils.isEmpty(roomId) || TextUtils.isEmpty(userId) || TextUtils.isEmpty(userSign)) {
+//            // 参数非法，可能执行了退房，或者登出
+//            TRTCLogger.e(TAG, "enter trtc room fail. params invalid. room id:" + roomId +
+//                    " user id:" + userId + " sign is empty:" + TextUtils.isEmpty(userSign));
+//            if (callback != null) {
+//                callback.onCallback(-1, "enter trtc room fail. params invalid. room id:" +
+//                        roomId + " user id:" + userId + " sign is empty:" + TextUtils.isEmpty(userSign));
+//            }
+//            return;
+//        }
         mUserId = userId;
         mRoomId = roomId;
         mStreamId = sdkAppId + "_" + roomId + "_" + userId + "_main";
@@ -93,6 +95,7 @@ public class TXTRTCMeeting extends TRTCCloudListener {
         mTRTCParams.userSig = userSign;
         mTRTCParams.role = TRTCCloudDef.TRTCRoleAnchor;
         mTRTCParams.streamId = mStreamId;
+
         //        if (enableRecording) {
         //            mTRTCParams.userDefineRecordId = mRoomId;
         //        }
@@ -100,7 +103,11 @@ public class TXTRTCMeeting extends TRTCCloudListener {
         //            mTRTCParams.streamId = mStreamId;
         //        }
         // 字符串房间号逻辑
-        mTRTCParams.roomId = Integer.valueOf(roomId);
+        mTRTCParams.roomId = -1;
+        Map<String, String >map = new HashMap<>();
+        map.put("strGroupId", "roomTest");
+        JSONObject jsonObj=new JSONObject(map);
+        mTRTCParams.businessInfo = jsonObj.toString();
         internalEnterRoom();
         if (callback != null) {
             callback.onCallback(0, "enter trtc room success");

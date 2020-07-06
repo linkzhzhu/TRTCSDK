@@ -64,7 +64,7 @@ public class GenerateTestUserSig {
      * 文档：https://cloud.tencent.com/document/product/269/32688#Server
      */
     private static final String SECRETKEY = "58be2ce0f263fcdecc3bfa77f270e48f188360cf8255f6283de3a19a85a214f4";
-    
+
     /**
      * 计算 UserSig 签名
      * <p>
