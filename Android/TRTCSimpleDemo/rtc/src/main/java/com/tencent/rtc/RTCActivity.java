@@ -3,12 +3,15 @@ package com.tencent.rtc;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.opengl.GLSurfaceView;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,6 +24,7 @@ import com.tencent.liteav.TXLiteAVCode;
 import com.tencent.liteav.beauty.TXBeautyManager;
 import com.tencent.liteav.debug.Constant;
 import com.tencent.liteav.debug.GenerateTestUserSig;
+import com.tencent.liteav.renderer.TXCGLSurfaceView;
 import com.tencent.rtc.R;
 import com.tencent.rtmp.ui.TXCloudVideoView;
 import com.tencent.trtc.TRTCCloud;
@@ -67,6 +71,7 @@ public class RTCActivity extends AppCompatActivity implements View.OnClickListen
     private int                             mLogLevel = 0;              // 日志等级
     private String                          mRoomId;                    // 房间Id
     private String                          mUserId;                    // 用户Id
+    private Button                          mBtnTest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +107,14 @@ public class RTCActivity extends AppCompatActivity implements View.OnClickListen
         mSwitchCamera       = findViewById(R.id.trtc_btn_switch_camera);
         mLogInfo            = findViewById(R.id.trtc_btn_log_info);
         mVideoMutedTipsView = findViewById(R.id.ll_trtc_mute_video_default);
+        mBtnTest            = findViewById(R.id.btn_test);
+
+        mBtnTest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resizeTest();
+            }
+        });
 
         if (!TextUtils.isEmpty(mRoomId)) {
             mTitleText.setText(mRoomId);
@@ -122,6 +135,24 @@ public class RTCActivity extends AppCompatActivity implements View.OnClickListen
         mRemoteViewList.add((TXCloudVideoView)findViewById(R.id.trtc_tc_cloud_view_6));
     }
 
+    boolean testFlag = false;
+    private void resizeTest(){
+        if(mRemoteViewList.get(0) == null){
+            Toast.makeText(getApplicationContext(), "需要打开远端预览", Toast.LENGTH_SHORT).show();
+        } else {
+//            TextureView textureView = mLocalPreviewView.getHWVideoView();
+            TextureView textureView= mRemoteViewList.get(0).getHWVideoView();
+            testFlag = !testFlag;
+            if(testFlag){
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(300, 300);
+                textureView.setLayoutParams(lp);
+            } else {
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(800, 800);
+                textureView.setLayoutParams(lp);
+            }
+        }
+    }
+
     private void enterRoom() {
         mTRTCCloud = TRTCCloud.sharedInstance(getApplicationContext());
         mTRTCCloud.setListener(new TRTCCloudImplListener(RTCActivity.this));
@@ -131,6 +162,7 @@ public class RTCActivity extends AppCompatActivity implements View.OnClickListen
         trtcParams.sdkAppId = GenerateTestUserSig.SDKAPPID;
         trtcParams.userId = mUserId;
         trtcParams.roomId = Integer.parseInt(mRoomId);
+        trtcParams.roomId = 111;
         // userSig是进入房间的用户签名，相当于密码（这里生成的是测试签名，正确做法需要业务服务器来生成，然后下发给客户端）
         trtcParams.userSig = GenerateTestUserSig.genTestUserSig(trtcParams.userId);
         trtcParams.role = TRTCRoleAnchor;
